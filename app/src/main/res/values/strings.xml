@@ -17,7 +17,8 @@
 
     <string name="home_second">Home Second</string>
     <string name="menu_filter">Filter</string>
-    <string name="menu_basic">Basic</string>
+    <string name="menu_adjust">Adjust</string>
+    <string name="menu_transform">Transform</string>
     <string name="menu_lighting">Lighting</string>
     <string name="menu_edit">Edit</string>
 </resources>

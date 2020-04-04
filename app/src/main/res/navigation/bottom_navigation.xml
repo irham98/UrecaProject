@@ -13,14 +13,14 @@
     </fragment>
 
     <fragment
-        android:id="@+id/nav_basic"
-        android:name="com.example.urecaproject.ui.edit.BasicFragment"
-        android:label="@string/menu_basic"
-        tools:layout="@layout/fragment_basic" />
+        android:id="@+id/nav_adjust"
+        android:name="com.example.urecaproject.ui.edit.AdjustFragment"
+        android:label="@string/menu_adjust"
+        tools:layout="@layout/fragment_adjust" />
 
     <fragment
-        android:id="@+id/nav_lighting"
-        android:name="com.example.urecaproject.ui.edit.LightingFragment"
-        android:label="@string/menu_lighting"
-        tools:layout="@layout/fragment_lighting" />
+        android:id="@+id/nav_transform"
+        android:name="com.example.urecaproject.ui.edit.TransformFragment"
+        android:label="@string/menu_transform"
+        tools:layout="@layout/fragment_transform" />
 </navigation>

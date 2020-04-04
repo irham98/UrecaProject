@@ -6,14 +6,14 @@ import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
 import com.example.urecaproject.R
-import com.example.urecaproject.model.BasicModel
-import kotlinx.android.synthetic.main.basic_item.view.*
+import com.example.urecaproject.model.AdjustModel
+import kotlinx.android.synthetic.main.adjust_item.view.*
 
-class BasicRecyclerAdapter(@LayoutRes private val layoutId: Int, private val basicItem: ArrayList<String>) : RecyclerView.Adapter<BasicRecyclerAdapter.ViewHolder>()  {
+class AdjustRecyclerAdapter(@LayoutRes private val layoutId: Int, private val adjustItem: ArrayList<AdjustModel>) : RecyclerView.Adapter<AdjustRecyclerAdapter.ViewHolder>()  {
 
     class ViewHolder(v: View) : RecyclerView.ViewHolder(v), View.OnClickListener {
         private var view: View = v
-        private var item: String? = null
+        private var item: AdjustModel? = null
 
         init {
             v.setOnClickListener(this)
@@ -23,12 +23,10 @@ class BasicRecyclerAdapter(@LayoutRes private val layoutId: Int, private val bas
             //TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
         }
 
-        fun bindItem(item: String) {
+        fun bindItem(item: AdjustModel) {
             this.item = item
-            view.buttonName.text = item
-            if (item.equals("Exposure")) view.buttonImage.setImageResource(R.drawable.ic_edit_exposure)
-            else if (item.equals("Contrast")) view.buttonImage.setImageResource(R.drawable.ic_edit_contrast)
-            else if (item.equals("Adjust")) view.buttonImage.setImageResource(R.drawable.ic_edit_adjust)
+            view.buttonName.text = item.text
+            view.buttonImage.setImageResource(item.drawable)
         }
 
 
@@ -37,19 +35,19 @@ class BasicRecyclerAdapter(@LayoutRes private val layoutId: Int, private val bas
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): BasicRecyclerAdapter.ViewHolder {
+    ): AdjustRecyclerAdapter.ViewHolder {
         return ViewHolder(LayoutInflater.from(parent.context).inflate(layoutId, parent, false))
         //TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     override fun getItemCount(): Int {
-        return basicItem.size
+        return adjustItem.size
         //TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun onBindViewHolder(holder: BasicRecyclerAdapter.ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: AdjustRecyclerAdapter.ViewHolder, position: Int) {
 
-        val item : String = basicItem[position]
+        val item : AdjustModel = adjustItem[position]
         holder.bindItem(item)
         //TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
