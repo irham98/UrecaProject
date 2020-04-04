@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="smething">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_filter"
+            android:icon="@drawable/ic_menu_filter"
+            android:title="@string/menu_filter" />
+        <item
+            android:id="@+id/nav_basic"
+            android:icon="@drawable/ic_menu_basic"
+            android:title="@string/menu_basic" />
+        <item
+            android:id="@+id/nav_lighting"
+            android:icon="@drawable/ic_menu_lighting"
+            android:title="@string/menu_lighting" />
+    </group>
+</menu>
