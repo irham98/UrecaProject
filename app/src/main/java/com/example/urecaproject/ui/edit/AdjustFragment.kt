@@ -15,7 +15,7 @@ import kotlinx.android.synthetic.main.fragment_adjust.*
 class AdjustFragment : Fragment() {
 
     //private lateinit var adapter: BasicRecyclerAdapter
-    var adjustItems: ArrayList<AdjustModel> = ArrayList()
+    private var adjustItems: ArrayList<AdjustModel> = ArrayList()
 
     override fun onAttach(context: Context) {
         super.onAttach(context)

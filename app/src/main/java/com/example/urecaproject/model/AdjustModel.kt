@@ -7,6 +7,9 @@ class AdjustModel (@DrawableRes var drawable: Int, var text: String){
     companion object {
         var list: ArrayList<AdjustModel> = ArrayList()
         fun addAllAdjust() {
+            if (list.size > 0) {
+                list.clear()
+            }
             list.add(AdjustModel(R.drawable.ic_adjust_exposure, "Exposure"))
             list.add(AdjustModel(R.drawable.ic_adjust_contrast, "Contrast"))
             list.add(AdjustModel(R.drawable.ic_adjust_brightness, "Brightness"))

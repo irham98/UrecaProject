@@ -12,8 +12,8 @@ import kotlinx.android.synthetic.main.adjust_item.view.*
 class AdjustRecyclerAdapter(@LayoutRes private val layoutId: Int, private val adjustItem: ArrayList<AdjustModel>) : RecyclerView.Adapter<AdjustRecyclerAdapter.ViewHolder>()  {
 
     class ViewHolder(v: View) : RecyclerView.ViewHolder(v), View.OnClickListener {
-        private var view: View = v
-        private var item: AdjustModel? = null
+        private val view: View = v
+        private lateinit var item: AdjustModel
 
         init {
             v.setOnClickListener(this)
@@ -35,20 +35,18 @@ class AdjustRecyclerAdapter(@LayoutRes private val layoutId: Int, private val ad
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): AdjustRecyclerAdapter.ViewHolder {
+    ): ViewHolder {
         return ViewHolder(LayoutInflater.from(parent.context).inflate(layoutId, parent, false))
-        //TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
     }
 
     override fun getItemCount(): Int {
         return adjustItem.size
-        //TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
     }
 
-    override fun onBindViewHolder(holder: AdjustRecyclerAdapter.ViewHolder, position: Int) {
-
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item : AdjustModel = adjustItem[position]
         holder.bindItem(item)
-        //TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 }
