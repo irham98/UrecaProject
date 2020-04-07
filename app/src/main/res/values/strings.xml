@@ -21,4 +21,13 @@
     <string name="menu_transform">Transform</string>
     <string name="menu_lighting">Lighting</string>
     <string name="menu_edit">Edit</string>
+
+    <string name="starlit">Starlit</string>
+    <string name="bluemess">Blue Mess</string>
+    <string name="lime">Lime</string>
+    <string name="amazon">Amazon</string>
+    <string name="adele">Adele</string>
+    <string name="awestruck">Awestruck</string>
+    <string name="metropolis">Metropolis</string>
+
 </resources>

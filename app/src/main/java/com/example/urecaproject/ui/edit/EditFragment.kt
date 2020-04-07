@@ -106,7 +106,7 @@ class EditFragment : Fragment() {
                     }
 
                 })
-                .apply(RequestOptions().centerCrop())
+                .apply(RequestOptions().placeholder(R.drawable.ic_broken_image).centerCrop())
                 .into(view.chosenImage)
         }
 /*        val image = chosenImage.drawable as BitmapDrawable

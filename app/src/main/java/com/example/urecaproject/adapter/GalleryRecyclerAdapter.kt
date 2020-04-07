@@ -1,6 +1,5 @@
 package com.example.urecaproject.adapter
 
-import android.R
 import android.content.Context
 import android.graphics.BitmapFactory
 import android.net.Uri
@@ -11,6 +10,7 @@ import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
+import com.example.urecaproject.R
 import kotlinx.android.synthetic.main.gallery_item.view.*
 import java.io.File
 
@@ -45,7 +45,7 @@ class GalleryRecyclerAdapter (
             Glide.with(context)
                 .load(Uri.decode(item))
                 .thumbnail(0.01f)
-                .apply(RequestOptions().placeholder(R.drawable.ic_menu_camera).centerCrop())
+                .apply(RequestOptions().placeholder(R.drawable.ic_broken_image).centerCrop())
                 .into(view.galleryImage)
         }
     }
