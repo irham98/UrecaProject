@@ -21,6 +21,7 @@ class GalleryViewModel (private val context: Context): ViewModel(), CoroutineSco
         get() = job + Dispatchers.Main
 
     private var imagesLiveData: MutableLiveData<List<String>> = MutableLiveData()
+
     fun getImageList(): LiveData<List<String>> {
         return imagesLiveData
     }

@@ -1,30 +1,26 @@
 package com.example.urecaproject.adapter
 
-import android.R
 import android.content.Context
-import android.graphics.BitmapFactory
-import android.net.Uri
+import android.graphics.Bitmap
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
-import kotlinx.android.synthetic.main.gallery_item.view.*
-import java.io.File
+import kotlinx.android.synthetic.main.thumbnail_item.view.*
 
 
-class GalleryRecyclerAdapter (
+class ThumbnailRecyclerAdapter (
     private val context: Context,
     @LayoutRes private val layoutId: Int,
-    private var galleryImages: ArrayList<String>,
+    private var galleryImages: ArrayList<Bitmap>,
     private val listener: ImageListener)
-    : RecyclerView.Adapter<GalleryRecyclerAdapter.ViewHolder>()   {
+    : RecyclerView.Adapter<ThumbnailRecyclerAdapter.ViewHolder>()   {
 
     inner class ViewHolder(v: View) : RecyclerView.ViewHolder(v), View.OnClickListener {
         private val view: View = v
-        private lateinit var item: String
+        private lateinit var item: Bitmap
 
         override fun onClick(view: View?) {
             listener.onImageSelected(galleryImages.get(adapterPosition))
@@ -34,20 +30,11 @@ class GalleryRecyclerAdapter (
             v.setOnClickListener(this)
         }
 
-        fun bindItem(item: String) {
+        fun bindItem(item: Bitmap) {
             this.item = item
-            getImage(item)
+            view.thumbImage.setImageBitmap(item)
         }
 
-        private fun getImage(item: String) {
-
-            //TODO read up on Glide
-            Glide.with(context)
-                .load(Uri.decode(item))
-                .thumbnail(0.01f)
-                .apply(RequestOptions().placeholder(R.drawable.ic_menu_camera).centerCrop())
-                .into(view.galleryImage)
-        }
     }
 
 
@@ -63,17 +50,17 @@ class GalleryRecyclerAdapter (
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val item : String = galleryImages[position]
+        val item : Bitmap = galleryImages[position]
         holder.bindItem(item)
     }
 
-    fun setImages(galleryImages: ArrayList<String>) {
+    fun setImages(galleryImages: ArrayList<Bitmap>) {
         this.galleryImages = galleryImages
         notifyDataSetChanged()
     }
 
     interface ImageListener {
-        fun onImageSelected (imagePath: String)
+        fun onImageSelected (imageBitmap: Bitmap)
     }
 
 
