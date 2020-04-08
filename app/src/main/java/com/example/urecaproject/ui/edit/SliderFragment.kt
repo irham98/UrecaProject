@@ -37,20 +37,38 @@ class SliderFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
         val factory = AdjustModelFactory()
         val bundle : Bundle? = arguments
         if (bundle != null) {
-            editType = bundle.getString("editType")!!
-            edit = factory.getAdjustModel(editType)!!
-            seekBar.max = edit.max
-            seekBar.min = edit.min
-            seekBar.progress = edit.start
-            seekBar.setOnSeekBarChangeListener(this)
+            if (bundle.containsKey("editType")) {
+                editType = bundle.getString("editType")!!
+                edit = factory.getAdjustModel(editType)!!
+                seekBar.max = edit.max
+                seekBar.min = edit.min
+                seekBar.progress = edit.start
+                seekBar.setOnSeekBarChangeListener(this)
+            }
+            else {
+                editType = "Filter"
+                seekBar.max = 255
+                seekBar.min = 0
+                seekBar.progress = 0
+                seekBar.setOnSeekBarChangeListener(this)
+            }
         }
+
     }
 
 
     override fun onProgressChanged(p0: SeekBar?, progress: Int, p2: Boolean) {
         var progressFloat : Float = progress.toFloat()
-        progressFloat *= edit.multiplier
+        if (editType.equals("Filter")) {
+
+        }
+        else {
+
+            progressFloat *= edit.multiplier
+
+        }
         editImageListener.onSliderChanged(progressFloat, editType)
+
 
 /*        if (editType.equals("Saturation"))
             saturationControls(p1)

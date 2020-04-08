@@ -1,16 +1,17 @@
 package com.example.urecaproject.ui.edit
 
-import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Paint
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
@@ -36,7 +37,8 @@ class EditFragment : Fragment(), SliderFragment.EditImageListener {
     }
 
     private lateinit var imagePath : String
-    private lateinit var bm : Bitmap
+    private lateinit var origBm : Bitmap
+    private lateinit var filteredBm : Bitmap
 
 
     override fun onCreateView(
@@ -58,59 +60,86 @@ class EditFragment : Fragment(), SliderFragment.EditImageListener {
         NavigationUI.setupWithNavController(bottomNav, navController)
 
         showImage(view)
+
+        editViewModel.filteredBitmap.observe(viewLifecycleOwner, Observer { bitmap ->
+            filteredBm = bitmap
+            chosenImage.setImageBitmap(filteredBm)
+        })
     }
 
     private fun showImage(view: View) {
         val bundle: Bundle? = arguments
+
+        val listener = object : RequestListener<Drawable> {
+            override fun onLoadFailed(
+                e: GlideException?,
+                model: Any?,
+                target: Target<Drawable>?,
+                isFirstResource: Boolean
+            ): Boolean {
+                return false
+            }
+
+            override fun onResourceReady(
+                resource: Drawable?,
+                model: Any?,
+                target: Target<Drawable>?,
+                dataSource: DataSource?,
+                isFirstResource: Boolean
+            ): Boolean {
+                val image = resource as BitmapDrawable
+                origBm = image.bitmap
+                editViewModel.setBitmap(origBm)
+                return false
+            }
+
+        }
         if (bundle != null) {
             imagePath = bundle.getString("path")!!
             Glide.with(context!!)
                 .load(Uri.decode(imagePath))
-                .listener(object : RequestListener<Drawable> {
-                    override fun onLoadFailed(
-                        e: GlideException?,
-                        model: Any?,
-                        target: Target<Drawable>?,
-                        isFirstResource: Boolean
-                    ): Boolean {
-                        return false
-                    }
-
-                    override fun onResourceReady(
-                        resource: Drawable?,
-                        model: Any?,
-                        target: Target<Drawable>?,
-                        dataSource: DataSource?,
-                        isFirstResource: Boolean
-                    ): Boolean {
-                        val image = resource as BitmapDrawable
-                        bm = image.bitmap
-                        editViewModel.setBitmap(bm)
-                        return false
-                    }
-
-                })
+                .listener(listener)
                 .apply(RequestOptions().placeholder(R.drawable.ic_broken_image).centerCrop())
                 .into(view.chosenImage)
         }
 
     }
 
+    fun toggleImageFilter (value: Int): Bitmap? {
+
+        val layer : Bitmap = origBm.copy(Bitmap.Config.ARGB_8888, true)
+        val filter : Bitmap = Bitmap.createScaledBitmap(filteredBm, layer.width, layer.height, true)
+        val paint = Paint().apply {
+            isAntiAlias = true
+            alpha = value
+        }
+        val comboImage = Canvas(layer)
+        comboImage.drawBitmap(filter, 0f, 0f, paint)
+        return layer
+    }
+
     override fun onSliderChanged(value: Float, string: String) {
         val myFilter = Filter()
         if (string.equals("Vignette")){
             myFilter.addSubFilter(VignetteSubFilter(context, value.toInt()))
+            chosenImage.setImageBitmap(myFilter.processFilter(origBm.copy(Bitmap.Config.ARGB_8888, true)))
         }
         else if (string.equals("Brightness")){
             myFilter.addSubFilter(BrightnessSubFilter(value.toInt()))
+            chosenImage.setImageBitmap(myFilter.processFilter(origBm.copy(Bitmap.Config.ARGB_8888, true)))
         }
         else if (string.equals("Saturation")){
             myFilter.addSubFilter(SaturationSubFilter(value))
+            chosenImage.setImageBitmap(myFilter.processFilter(origBm.copy(Bitmap.Config.ARGB_8888, true)))
         }
         else if (string.equals("Contrast")){
             myFilter.addSubFilter(ContrastSubFilter(value))
+            chosenImage.setImageBitmap(myFilter.processFilter(origBm.copy(Bitmap.Config.ARGB_8888, true)))
         }
-        chosenImage.setImageBitmap(myFilter.processFilter(bm.copy(Bitmap.Config.ARGB_8888, true)))
+        else if (string.equals("Filter")) {
+            chosenImage.setImageBitmap(toggleImageFilter(value.toInt()))
+        }
+
     }
 
     override fun onEditStarted() {

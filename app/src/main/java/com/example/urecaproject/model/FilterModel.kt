@@ -12,7 +12,7 @@ class FilterModel(
     }
 
     fun processFilter(inputImage: Bitmap): Bitmap {
-        var outputImage = inputImage
+        var outputImage = inputImage.copy(Bitmap.Config.ARGB_8888, true)
         for (subFilter in subfilters) {
             try {
                 //processing via library
