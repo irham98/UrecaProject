@@ -10,9 +10,6 @@
     <string name="menu_home">Home</string>
     <string name="menu_gallery">Gallery</string>
     <string name="menu_slideshow">Slideshow</string>
-    <string name="basic_exposure">Exposure</string>
-    <string name="basic_contrast">Contrast</string>
-    <string name="basic_adjust">Adjust</string>
 
 
     <string name="home_second">Home Second</string>
@@ -21,6 +18,7 @@
     <string name="menu_transform">Transform</string>
     <string name="menu_lighting">Lighting</string>
     <string name="menu_edit">Edit</string>
+    <string name="menu_slider">Slider</string>
 
     <string name="starlit">Starlit</string>
     <string name="bluemess">Blue Mess</string>
@@ -29,6 +27,6 @@
     <string name="adele">Adele</string>
     <string name="awestruck">Awestruck</string>
     <string name="metropolis">Metropolis</string>
-    <string name="menu_slider">Slider</string>
+
 
 </resources>

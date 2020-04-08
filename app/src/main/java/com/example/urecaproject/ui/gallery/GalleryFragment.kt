@@ -21,7 +21,7 @@ class GalleryFragment : Fragment() {
 
     private val galleryViewModel: GalleryViewModel by lazy {
         val factory = GalleryViewModelFactory(context!!)
-        ViewModelProvider(this, factory).get(GalleryViewModel::class.java)
+        ViewModelProvider(activity!!, factory).get(GalleryViewModel::class.java)
     }
     private var images : ArrayList<String> = ArrayList()
 

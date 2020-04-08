@@ -25,6 +25,7 @@ import com.zomato.photofilters.imageprocessors.Filter
 import com.zomato.photofilters.imageprocessors.subfilters.BrightnessSubFilter
 import com.zomato.photofilters.imageprocessors.subfilters.ContrastSubFilter
 import com.zomato.photofilters.imageprocessors.subfilters.SaturationSubFilter
+import com.zomato.photofilters.imageprocessors.subfilters.VignetteSubFilter
 import kotlinx.android.synthetic.main.fragment_edit.*
 import kotlinx.android.synthetic.main.fragment_edit.view.*
 
@@ -36,10 +37,6 @@ class EditFragment : Fragment(), SliderFragment.EditImageListener {
 
     private lateinit var imagePath : String
     private lateinit var bm : Bitmap
-
-    companion object {
-        const val REQUEST_OPEN_IMAGE = 1
-    }
 
 
     override fun onCreateView(
@@ -61,24 +58,6 @@ class EditFragment : Fragment(), SliderFragment.EditImageListener {
         NavigationUI.setupWithNavController(bottomNav, navController)
 
         showImage(view)
-    }
-
-
-
-    fun requestImage() {
-        val getPictureIntent = Intent(Intent.ACTION_GET_CONTENT)
-        getPictureIntent.type = "image/*"
-        val pickPictureIntent = Intent(
-            Intent.ACTION_PICK,
-            MediaStore.Images.Media.EXTERNAL_CONTENT_URI
-        )
-        val chooserIntent = Intent.createChooser(getPictureIntent, "Select Image")
-        chooserIntent.putExtra(
-            Intent.EXTRA_INITIAL_INTENTS, arrayOf(
-                pickPictureIntent
-            )
-        )
-        startActivityForResult(chooserIntent, REQUEST_OPEN_IMAGE)
     }
 
     private fun showImage(view: View) {
@@ -118,21 +97,20 @@ class EditFragment : Fragment(), SliderFragment.EditImageListener {
     }
 
     override fun onSliderChanged(value: Float, string: String) {
-        if (string.equals("Brightness")){
-            var myFilter = Filter()
+        val myFilter = Filter()
+        if (string.equals("Vignette")){
+            myFilter.addSubFilter(VignetteSubFilter(context, value.toInt()))
+        }
+        else if (string.equals("Brightness")){
             myFilter.addSubFilter(BrightnessSubFilter(value.toInt()))
-            chosenImage.setImageBitmap(myFilter.processFilter(bm.copy(Bitmap.Config.ARGB_8888, true)))
         }
         else if (string.equals("Saturation")){
-            var myFilter = Filter()
             myFilter.addSubFilter(SaturationSubFilter(value))
-            chosenImage.setImageBitmap(myFilter.processFilter(bm.copy(Bitmap.Config.ARGB_8888, true)))
         }
         else if (string.equals("Contrast")){
-            var myFilter = Filter()
             myFilter.addSubFilter(ContrastSubFilter(value))
-            chosenImage.setImageBitmap(myFilter.processFilter(bm.copy(Bitmap.Config.ARGB_8888, true)))
         }
+        chosenImage.setImageBitmap(myFilter.processFilter(bm.copy(Bitmap.Config.ARGB_8888, true)))
     }
 
     override fun onEditStarted() {
@@ -142,22 +120,5 @@ class EditFragment : Fragment(), SliderFragment.EditImageListener {
     override fun onEditCompleted() {
         //TODO("Not yet implemented")
     }
-
-
-/*    @RequiresApi(Build.VERSION_CODES.P)
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-
-
-        if (requestCode == REQUEST_OPEN_IMAGE && resultCode == RESULT_OK) {
-            if (data != null) {
-                val imgUri = data.data
-                val source = ImageDecoder.createSource(activity!!.getContentResolver(), imgUri!!)
-                mBitmap = ImageDecoder.decodeBitmap(source)
-                mImageView.setImageBitmap(mBitmap)
-            }
-        }
-    }*/
-
 
 }

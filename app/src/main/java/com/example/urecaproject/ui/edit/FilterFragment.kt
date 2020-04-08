@@ -55,6 +55,7 @@ class FilterFragment : Fragment() {
             override fun onImageSelected(imageBitmap: Bitmap) {
                 //change the image on EditFragment
                 Log.i("TAG", "this thumbnail was clicked")
+
             }
         })
         filterRv.adapter = adapter
