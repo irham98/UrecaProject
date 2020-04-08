@@ -16,11 +16,25 @@
         android:id="@+id/nav_adjust"
         android:name="com.example.urecaproject.ui.edit.AdjustFragment"
         android:label="@string/menu_adjust"
-        tools:layout="@layout/fragment_adjust" />
+        tools:layout="@layout/fragment_adjust" >
+        <action
+            android:id="@+id/action_nav_adjust_to_nav_slider"
+            app:destination="@id/nav_slider" />
+    </fragment>
 
     <fragment
         android:id="@+id/nav_transform"
         android:name="com.example.urecaproject.ui.edit.TransformFragment"
         android:label="@string/menu_transform"
         tools:layout="@layout/fragment_transform" />
+
+    <fragment
+        android:id="@+id/nav_slider"
+        android:name="com.example.urecaproject.ui.edit.SliderFragment"
+        android:label="@string/menu_slider"
+        tools:layout="@layout/fragment_slider" >
+        <argument
+            android:name="editType"
+            app:argType="string" />
+    </fragment>
 </navigation>

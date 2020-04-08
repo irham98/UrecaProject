@@ -9,9 +9,13 @@ import com.example.urecaproject.R
 import com.example.urecaproject.model.AdjustModel
 import kotlinx.android.synthetic.main.adjust_item.view.*
 
-class AdjustRecyclerAdapter(@LayoutRes private val layoutId: Int, private val adjustItem: ArrayList<AdjustModel>) : RecyclerView.Adapter<AdjustRecyclerAdapter.ViewHolder>()  {
+class AdjustRecyclerAdapter(
+    @LayoutRes private val layoutId: Int,
+    private val adjustItem: ArrayList<AdjustModel>,
+    private val listener: ButtonListener)
+    : RecyclerView.Adapter<AdjustRecyclerAdapter.ViewHolder>()  {
 
-    class ViewHolder(v: View) : RecyclerView.ViewHolder(v), View.OnClickListener {
+    inner class ViewHolder(v: View) : RecyclerView.ViewHolder(v), View.OnClickListener {
         private val view: View = v
         private lateinit var item: AdjustModel
 
@@ -20,6 +24,7 @@ class AdjustRecyclerAdapter(@LayoutRes private val layoutId: Int, private val ad
         }
 
         override fun onClick(p0: View?) {
+            listener.onButtonSelected(adjustItem.get(adapterPosition).text)
             //TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
         }
 
@@ -48,5 +53,9 @@ class AdjustRecyclerAdapter(@LayoutRes private val layoutId: Int, private val ad
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item : AdjustModel = adjustItem[position]
         holder.bindItem(item)
+    }
+
+    interface ButtonListener {
+        fun onButtonSelected(string : String)
     }
 }

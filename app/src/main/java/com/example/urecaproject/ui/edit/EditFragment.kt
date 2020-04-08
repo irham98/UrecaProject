@@ -21,16 +21,21 @@ import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
 import com.example.urecaproject.R
+import com.zomato.photofilters.imageprocessors.Filter
+import com.zomato.photofilters.imageprocessors.subfilters.BrightnessSubFilter
+import com.zomato.photofilters.imageprocessors.subfilters.ContrastSubFilter
+import com.zomato.photofilters.imageprocessors.subfilters.SaturationSubFilter
 import kotlinx.android.synthetic.main.fragment_edit.*
 import kotlinx.android.synthetic.main.fragment_edit.view.*
 
-class EditFragment : Fragment() {
+class EditFragment : Fragment(), SliderFragment.EditImageListener {
 
     private val editViewModel: EditViewModel by lazy {
         ViewModelProvider(activity!!).get(EditViewModel::class.java)
     }
 
     private lateinit var imagePath : String
+    private lateinit var bm : Bitmap
 
     companion object {
         const val REQUEST_OPEN_IMAGE = 1
@@ -49,7 +54,7 @@ class EditFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
+        SliderFragment.setListener(this)
         val navHostFragment =
             childFragmentManager.findFragmentById(R.id.bottom_fragment) as NavHostFragment?
         val navController = navHostFragment!!.navController
@@ -100,7 +105,7 @@ class EditFragment : Fragment() {
                         isFirstResource: Boolean
                     ): Boolean {
                         val image = resource as BitmapDrawable
-                        val bm  : Bitmap = image.bitmap
+                        bm = image.bitmap
                         editViewModel.setBitmap(bm)
                         return false
                     }
@@ -109,10 +114,35 @@ class EditFragment : Fragment() {
                 .apply(RequestOptions().placeholder(R.drawable.ic_broken_image).centerCrop())
                 .into(view.chosenImage)
         }
-/*        val image = chosenImage.drawable as BitmapDrawable
-        val bm  : Bitmap = image.bitmap
-        editViewModel.setBitmap(bm)*/
+
     }
+
+    override fun onSliderChanged(value: Float, string: String) {
+        if (string.equals("Brightness")){
+            var myFilter = Filter()
+            myFilter.addSubFilter(BrightnessSubFilter(value.toInt()))
+            chosenImage.setImageBitmap(myFilter.processFilter(bm.copy(Bitmap.Config.ARGB_8888, true)))
+        }
+        else if (string.equals("Saturation")){
+            var myFilter = Filter()
+            myFilter.addSubFilter(SaturationSubFilter(value))
+            chosenImage.setImageBitmap(myFilter.processFilter(bm.copy(Bitmap.Config.ARGB_8888, true)))
+        }
+        else if (string.equals("Contrast")){
+            var myFilter = Filter()
+            myFilter.addSubFilter(ContrastSubFilter(value))
+            chosenImage.setImageBitmap(myFilter.processFilter(bm.copy(Bitmap.Config.ARGB_8888, true)))
+        }
+    }
+
+    override fun onEditStarted() {
+        //TODO("Not yet implemented")
+    }
+
+    override fun onEditCompleted() {
+        //TODO("Not yet implemented")
+    }
+
 
 /*    @RequiresApi(Build.VERSION_CODES.P)
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
