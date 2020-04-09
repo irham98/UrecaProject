@@ -10,6 +10,9 @@
         android:name="com.example.urecaproject.ui.edit.FilterFragment"
         android:label="@string/menu_filter"
         tools:layout="@layout/fragment_filter">
+        <action
+            android:id="@+id/action_nav_filter_to_nav_slider"
+            app:destination="@id/nav_slider" />
     </fragment>
 
     <fragment
@@ -36,5 +39,11 @@
         <argument
             android:name="editType"
             app:argType="string" />
+        <action
+            android:id="@+id/action_nav_slider_to_nav_adjust"
+            app:destination="@id/nav_adjust" />
+        <action
+            android:id="@+id/action_nav_slider_to_nav_filter"
+            app:destination="@id/nav_filter" />
     </fragment>
 </navigation>

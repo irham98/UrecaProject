@@ -52,6 +52,7 @@ class GalleryFragment : Fragment() {
         val adapter = GalleryRecyclerAdapter(context!!, R.layout.gallery_item, images, listener)
         galleryRv.adapter = adapter
         galleryRv.layoutManager = GridLayoutManager(context, 3)
+        galleryRv.setHasFixedSize(true)
 
         galleryViewModel.getImageList().observe(viewLifecycleOwner, Observer { listOfImage ->
             images = ArrayList(listOfImage)

@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.urecaproject.R
@@ -14,6 +15,10 @@ import com.example.urecaproject.model.AdjustModel
 import kotlinx.android.synthetic.main.fragment_adjust.*
 
 class AdjustFragment : Fragment() {
+
+    private val editViewModel: EditViewModel by lazy {
+        ViewModelProvider(activity!!).get(EditViewModel::class.java)
+    }
 
     //private lateinit var adapter: BasicRecyclerAdapter
     private var adjustItems: ArrayList<AdjustModel> = ArrayList()
@@ -45,6 +50,7 @@ class AdjustFragment : Fragment() {
                 val bundle = Bundle()
                 bundle.putString("editType", string)
                 Navigation.findNavController(view).navigate(R.id.nav_slider, bundle)
+                editViewModel.setVisible(View.INVISIBLE)
             }
 
         })

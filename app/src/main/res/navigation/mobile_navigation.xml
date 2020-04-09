@@ -10,6 +10,10 @@
         android:name="com.example.urecaproject.ui.home.HomeFragment"
         android:label="@string/menu_home"
         tools:layout="@layout/fragment_home">
+        <argument
+            android:name="imageSaved"
+            app:argType="integer"
+            android:defaultValue="0" />
     </fragment>
 
 
@@ -31,5 +35,8 @@
         <argument
             android:name="imagePath"
             app:argType="string" />
+        <action
+            android:id="@+id/action_nav_edit_to_nav_home"
+            app:destination="@id/nav_home" />
     </fragment>
 </navigation>

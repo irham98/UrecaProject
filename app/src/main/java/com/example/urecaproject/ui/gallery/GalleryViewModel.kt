@@ -44,24 +44,16 @@ class GalleryViewModel (private val context: Context): ViewModel(), CoroutineSco
         val projection = arrayOf(MediaStore.Images.Media._ID)
 
         cursor = context.contentResolver.query(uri, projection, null, null, null)
-        if (cursor != null) {
-
-                Log.i("number of rows", cursor.count.toString())
-        }
         columnIndexId = cursor!!.getColumnIndexOrThrow(MediaStore.Images.Media._ID)
 
 
         while (cursor.moveToNext()) {
 
             imageId = cursor.getLong(columnIndexId)
-            Log.i("imageid", ""+imageId)
+            //Log.i("imageid", ""+imageId)
             val imageUri = Uri.withAppendedPath(uri, "" + imageId)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                val bitmap : Bitmap = context.contentResolver.loadThumbnail(imageUri, Size(640, 480), null)
-
-            }
             imagePath = imageUri.toString()
-            Log.i("imagepath", imagePath)
+            //Log.i("imagepath", imagePath)
             imageList.add(imagePath)
         }
         cursor.close()

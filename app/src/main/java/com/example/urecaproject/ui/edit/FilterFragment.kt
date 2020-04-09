@@ -43,9 +43,10 @@ class FilterFragment : Fragment() {
         val listener = object : ThumbnailRecyclerAdapter.ImageListener {
             override fun onImageSelected(imageFilter : FilterModel) {
                 //change the image on EditFragment
-                filteredBm = imageFilter.processFilter(origBm)
+                filteredBm = imageFilter.processFilter(origBm.copy(Bitmap.Config.ARGB_8888, true))
                 editViewModel.setFilteredBitmap(filteredBm)
                 Navigation.findNavController(view).navigate(R.id.nav_slider)
+                editViewModel.setVisible(View.INVISIBLE)
             }
         }
 
@@ -61,6 +62,7 @@ class FilterFragment : Fragment() {
         val linearLayoutManager = LinearLayoutManager(context)
         linearLayoutManager.orientation = LinearLayoutManager.HORIZONTAL
         filterRv.layoutManager = linearLayoutManager
+        filterRv.setHasFixedSize(true)
         //adapter = ThumbnailRecyclerAdapter(
         //filterRv.adapter = adapter
 

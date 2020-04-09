@@ -33,8 +33,8 @@ class FilterPack {
             blueKnots[4] = Point(167f, 209f)
             blueKnots[5] = Point(255f, 255f)
             val filter = FilterModel(context.getString(R.string.amazon))
-            filter.addSubfilter(ContrastSubFilter(1.2f))
-            filter.addSubfilter(ToneCurveSubFilter(null, null, null, blueKnots))
+            filter.addSubFilter(ContrastSubFilter(1.2f))
+            filter.addSubFilter(ToneCurveSubFilter(null, null, null, blueKnots))
             return filter
         }
 
@@ -45,7 +45,7 @@ class FilterPack {
             blueKnots[1] = Point(165f, 114f)
             blueKnots[2] = Point(255f, 255f)
             val filter = FilterModel(context.getString(R.string.lime))
-            filter.addSubfilter(ToneCurveSubFilter(null, null, null, blueKnots))
+            filter.addSubFilter(ToneCurveSubFilter(null, null, null, blueKnots))
             return filter
         }
 
@@ -60,7 +60,7 @@ class FilterPack {
             rgbKnots[6] = Point(207f, 233f)
             rgbKnots[7] = Point(255f, 255f)
             val filter = FilterModel(context.getString(R.string.starlit))
-            filter.addSubfilter(ToneCurveSubFilter(rgbKnots, null, null, null))
+            filter.addSubFilter(ToneCurveSubFilter(rgbKnots, null, null, null))
             return filter
         }
 
@@ -76,9 +76,9 @@ class FilterPack {
             redKnots[6] = Point(225f, 242f)
             redKnots[7] = Point(255f, 255f)
             val filter = FilterModel(context.getString(R.string.bluemess))
-            filter.addSubfilter(ToneCurveSubFilter(null, redKnots, null, null))
-            filter.addSubfilter(BrightnessSubFilter(30))
-            filter.addSubfilter(ContrastSubFilter(1f))
+            filter.addSubFilter(ToneCurveSubFilter(null, redKnots, null, null))
+            filter.addSubFilter(BrightnessSubFilter(30))
+            filter.addSubFilter(ContrastSubFilter(1f))
             return filter
         }
 
@@ -120,21 +120,21 @@ class FilterPack {
             blueKnots[6] = Point(255f, 255f)
 
             val filter = FilterModel(context.getString(R.string.awestruck))
-            filter.addSubfilter(ToneCurveSubFilter(rgbKnots, redKnots, greenKnots, blueKnots))
+            filter.addSubFilter(ToneCurveSubFilter(rgbKnots, redKnots, greenKnots, blueKnots))
             return filter
         }
 
         fun getAdeleFilter(context: Context) : FilterModel {
             val filter = FilterModel(context.getString(R.string.adele))
-            filter.addSubfilter(SaturationSubFilter(-100f))
+            filter.addSubFilter(SaturationSubFilter(-100f))
             return filter
         }
 
         fun getMetropolisFilter(context: Context) : FilterModel {
             val filter  = FilterModel(context.getString(R.string.metropolis))
-            filter.addSubfilter(SaturationSubFilter(-100f))
-            filter.addSubfilter(ContrastSubFilter(1.7f))
-            filter.addSubfilter(BrightnessSubFilter(70))
+            filter.addSubFilter(SaturationSubFilter(-100f))
+            filter.addSubFilter(ContrastSubFilter(1.7f))
+            filter.addSubFilter(BrightnessSubFilter(70))
             return filter
         }
     }

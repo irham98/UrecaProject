@@ -27,6 +27,8 @@
     <string name="adele">Adele</string>
     <string name="awestruck">Awestruck</string>
     <string name="metropolis">Metropolis</string>
+    <string name="cancel">CANCEL</string>
+    <string name="apply">APPLY</string>
 
 
 </resources>
