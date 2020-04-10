@@ -25,7 +25,6 @@ class AdjustRecyclerAdapter(
 
         override fun onClick(p0: View?) {
             listener.onButtonSelected(adjustItem.get(adapterPosition).text)
-            //TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
         }
 
         fun bindItem(item: AdjustModel) {

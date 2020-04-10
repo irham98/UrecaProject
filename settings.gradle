@@ -1,2 +1,3 @@
 rootProject.name='UrecaProject'
 include ':app'
+include ':openCVLibrary343'

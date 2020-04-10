@@ -19,7 +19,7 @@ import kotlinx.android.synthetic.main.fragment_filter.*
 
 class FilterFragment : Fragment() {
 
-    private lateinit var filteredBm : Bitmap
+    //private lateinit var filteredBm : Bitmap
     private lateinit var origBm : Bitmap
     private lateinit var adapter : ThumbnailRecyclerAdapter
     //private val thumbnails : ArrayList<Bitmap> = ArrayList()
@@ -43,8 +43,8 @@ class FilterFragment : Fragment() {
         val listener = object : ThumbnailRecyclerAdapter.ImageListener {
             override fun onImageSelected(imageFilter : FilterModel) {
                 //change the image on EditFragment
-                filteredBm = imageFilter.processFilter(origBm.copy(Bitmap.Config.ARGB_8888, true))
-                editViewModel.setFilteredBitmap(filteredBm)
+                //filteredBm = imageFilter.processFilter(origBm.copy(Bitmap.Config.ARGB_8888, true))
+                editViewModel.setFilter(imageFilter)
                 Navigation.findNavController(view).navigate(R.id.nav_slider)
                 editViewModel.setVisible(View.INVISIBLE)
             }
@@ -57,6 +57,7 @@ class FilterFragment : Fragment() {
             origBm = bitmap
             adapter = ThumbnailRecyclerAdapter(context!!, R.layout.thumbnail_item, origBm, listener)
             filterRv.adapter = adapter
+            filterRv.setHasFixedSize(true)
         })
 
         val linearLayoutManager = LinearLayoutManager(context)

@@ -86,11 +86,11 @@ class SliderFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
     }
 
     override fun onStartTrackingTouch(p0: SeekBar?) {
-        editImageListener.onEditStarted()
+
     }
 
     override fun onStopTrackingTouch(p0: SeekBar?) {
-        editImageListener.onEditCompleted()
+
     }
 
 /*
@@ -114,7 +114,5 @@ class SliderFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
 
     interface EditImageListener {
         fun onSliderChanged(value: Float, string: String)
-        fun onEditStarted()
-        fun onEditCompleted()
     }
 }

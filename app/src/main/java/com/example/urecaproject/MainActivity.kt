@@ -3,8 +3,9 @@ package com.example.urecaproject
 import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
+import android.os.Environment
+import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
@@ -15,9 +16,8 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
-import com.google.android.material.snackbar.Snackbar
+import org.opencv.android.OpenCVLoader
 
 class MainActivity : AppCompatActivity() {
 
@@ -27,11 +27,16 @@ class MainActivity : AppCompatActivity() {
     companion object {
         init {
             System.loadLibrary("NativeImageProcessor");
+            System.loadLibrary("opencv_java3")
         }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        //check if library was properly loaded
+        check(OpenCVLoader.initDebug(), { Toast.makeText(this, "OpenCV was not initialized properly", Toast.LENGTH_SHORT).show() })
+
         setContentView(R.layout.activity_main)
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
@@ -49,6 +54,26 @@ class MainActivity : AppCompatActivity() {
                 R.id.nav_home, R.id.nav_gallery), drawerLayout)
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
+
+        getFile()
+    }
+
+    fun getFile() {
+        var files : Array<String> = applicationContext.fileList()
+        for (i in applicationContext.filesDir.listFiles()) {
+            i.delete()
+        }
+
+        for (i in files) {
+            Log.i("TAG", i)
+        }
+
+
+/*        applicationContext.openFileInput("ureca2").bufferedReader().useLines { lines->
+            lines.fold("") {some, text ->
+                "$some\n$text"
+            }
+        }*/
     }
 
 /*    override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -81,4 +106,5 @@ class MainActivity : AppCompatActivity() {
             arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
             EXTERNAL_STORAGE_REQUEST_CODE)
     }
+
 }

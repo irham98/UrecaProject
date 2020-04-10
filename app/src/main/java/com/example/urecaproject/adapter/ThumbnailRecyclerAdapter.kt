@@ -2,15 +2,19 @@ package com.example.urecaproject.adapter
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.example.urecaproject.FilterPack
 import com.example.urecaproject.R
 import com.example.urecaproject.model.FilterModel
 import kotlinx.android.synthetic.main.thumbnail_item.view.*
+import kotlinx.coroutines.*
 
 
 class ThumbnailRecyclerAdapter (
@@ -20,7 +24,7 @@ class ThumbnailRecyclerAdapter (
     private val listener: ImageListener)
     : RecyclerView.Adapter<ThumbnailRecyclerAdapter.ViewHolder>()   {
 
-    private var galleryImages: ArrayList<FilterModel> = FilterPack.getFilterPack(context)
+    private var imageFilters: ArrayList<FilterModel> = FilterPack.getFilterPack(context)
     //private lateinit var imageBitmap : Bitmap
 
     inner class ViewHolder(v: View) : RecyclerView.ViewHolder(v), View.OnClickListener {
@@ -28,7 +32,7 @@ class ThumbnailRecyclerAdapter (
         private lateinit var item: FilterModel
 
         override fun onClick(view: View?) {
-            listener.onImageSelected(galleryImages[adapterPosition])
+            listener.onImageSelected(imageFilters[adapterPosition])
         }
 
         init {
@@ -37,15 +41,18 @@ class ThumbnailRecyclerAdapter (
 
         fun bindItem(item: FilterModel) {
             this.item = item
-            processBitmap()
+            val thumbnail  = processBitmap()
+            Glide.with(view).load(thumbnail).thumbnail(0.1f).apply(RequestOptions().centerCrop()).into(view.thumbImage)
+            //view.thumbImage.setImageBitmap(thumbnail)
             //view.thumbImage.setImageBitmap(item)
         }
 
-        fun processBitmap() {
-            val size : Int = context.resources.getDimension(R.dimen.thumbnail_size).toInt()
-            val small = Bitmap.createScaledBitmap(imageBitmap, size, size, false)
-            val processedThumbnail = item.processFilter(small)
-            view.thumbImage.setImageBitmap(processedThumbnail)
+        fun processBitmap() : Bitmap {
+            //val size : Int = context.resources.getDimension(R.dimen.thumbnail_size).toInt()
+            //val small = Bitmap.createScaledBitmap(imageBitmap, size, size, false)
+            val processedThumbnail = item.processFilter(imageBitmap.copy(Bitmap.Config.ARGB_8888, true))
+            return processedThumbnail
+
         }
 
     }
@@ -59,11 +66,11 @@ class ThumbnailRecyclerAdapter (
     }
 
     override fun getItemCount(): Int {
-        return galleryImages.size
+        return imageFilters.size
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val item : FilterModel = galleryImages[position]
+        val item : FilterModel = imageFilters[position]
         holder.bindItem(item)
     }
 
