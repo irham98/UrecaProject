@@ -5,7 +5,6 @@ import android.content.ContentValues
 import android.graphics.*
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
-import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
@@ -22,7 +21,6 @@ import androidx.navigation.Navigation
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
 import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.example.urecaproject.R
@@ -35,6 +33,7 @@ import org.opencv.core.Point
 import java.io.File
 import java.io.FileOutputStream
 import java.util.*
+import kotlin.math.roundToInt
 
 typealias Coordinates = Pair<Point, Point>
 class EditFragment : Fragment(), SliderFragment.EditImageListener, View.OnTouchListener {
@@ -56,7 +55,7 @@ class EditFragment : Fragment(), SliderFragment.EditImageListener, View.OnTouchL
     private val coordinates: Coordinates = Coordinates(Point(-1.0, -1.0), Point(-1.0, -1.0))
 
     companion object {
-        val IMAGE_SAVED = 1
+        const val IMAGE_SAVED = 1
     }
 
     override fun onCreateView(
@@ -73,26 +72,16 @@ class EditFragment : Fragment(), SliderFragment.EditImageListener, View.OnTouchL
 
         SliderFragment.setListener(this)
 
-        cancel.setOnClickListener(object: View.OnClickListener {
-            override fun onClick(p0: View?) {
-                endEdit(false)
-            }
-        })
+        cancel.setOnClickListener { endEdit(false) }
 
-        apply.setOnClickListener(object: View.OnClickListener {
-            override fun onClick(p0: View?) {
-                endEdit(true)
-            }
-        })
+        apply.setOnClickListener { endEdit(true) }
 
-        saveImage.setOnClickListener(object: View.OnClickListener {
-            override fun onClick(p0: View?) {
-                CoroutineScope(Dispatchers.IO).launch { saveImage() }
-                val bundle = Bundle()
-                bundle.putInt("imageSaved", IMAGE_SAVED)
-                Navigation.findNavController(view).navigate(R.id.nav_home, bundle)
-            }
-        })
+        saveImage.setOnClickListener {
+            CoroutineScope(Dispatchers.IO).launch { saveImage() }
+            val bundle = Bundle()
+            bundle.putInt("imageSaved", IMAGE_SAVED)
+            Navigation.findNavController(view).navigate(R.id.nav_home, bundle)
+        }
 
         chosenImage.setOnTouchListener (this)
 
@@ -130,7 +119,7 @@ class EditFragment : Fragment(), SliderFragment.EditImageListener, View.OnTouchL
         })
     }
 
-    suspend fun grabCut() {
+    private suspend fun grabCut() {
         if (isTargetChosen()) {
 
             loadingGrabcut.visibility = View.VISIBLE
@@ -144,7 +133,7 @@ class EditFragment : Fragment(), SliderFragment.EditImageListener, View.OnTouchL
         }
     }
 
-    fun loadWithGlide(path: String)  {
+    private fun loadWithGlide(path: String)  {
         Glide.with(this)
             .asBitmap()
             .load(path)
@@ -171,7 +160,7 @@ class EditFragment : Fragment(), SliderFragment.EditImageListener, View.OnTouchL
 
     }
 
-    fun writeToExternalAppStorage(bm : Bitmap) {
+    private fun writeToExternalAppStorage(bm : Bitmap) {
         deleteFiles()
 
         val filename = "chosenimage" + generateRandomInt()
@@ -188,51 +177,34 @@ class EditFragment : Fragment(), SliderFragment.EditImageListener, View.OnTouchL
         internalPath = file.absolutePath
     }
 
-    fun deleteFiles() {
+    private fun deleteFiles() {
         val dir = context!!.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-        for (i in dir!!.listFiles()) {
+
+        for (i in dir!!.listFiles()!!) {
             Log.i("TAG", i.name)
             i.delete()
         }
-    }
-
-    fun toggleImageFilter (value: Int): Bitmap {
-
-        val layer : Bitmap = origBm.copy(Bitmap.Config.ARGB_8888, true)
-        val filter : Bitmap = Bitmap.createScaledBitmap(filteredBm, layer.width, layer.height, true)
-        val paint = Paint().apply {
-            isAntiAlias = true
-            alpha = value
-        }
-        val comboImage = Canvas(layer)
-        comboImage.drawBitmap(filter, 0f, 0f, paint)
-        return layer
     }
 
     override fun onSliderChanged(value: Float, string: String) {
         editImage(value, string)
     }
 
-    fun editImage(value: Float, string: String) : Bitmap {
+    private fun editImage(value: Float, string: String) : Bitmap {
         val myFilter = Filter()
         val factory = SubFilterFactory()
-        val subfilter : SubFilter = factory.getSubFilter(context!!, string, value)
+        val subfilter : SubFilter = factory.getSubFilter(context, string, value, filteredBm)
         val bitmap : Bitmap
         finalFloat = value
         finalStr = string
-        if (string.equals("Filter")) {
-            bitmap = toggleImageFilter(value.toInt())
-            chosenImage.setImageBitmap(bitmap)
-        }
-        else {
-            myFilter.addSubFilter(subfilter)
-            bitmap = myFilter.processFilter(origBm.copy(Bitmap.Config.ARGB_8888, true))
-            chosenImage.setImageBitmap(bitmap)
-        }
+        myFilter.addSubFilter(subfilter)
+        bitmap = myFilter.processFilter(origBm.copy(Bitmap.Config.ARGB_8888, true))
+        chosenImage.setImageBitmap(bitmap)
+
         return bitmap
     }
 
-    fun endEdit (apply : Boolean) {
+    private fun endEdit (apply : Boolean) {
         if (apply) {
             origBm = editImage(finalFloat, finalStr)
         }
@@ -262,9 +234,9 @@ class EditFragment : Fragment(), SliderFragment.EditImageListener, View.OnTouchL
             finalBitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
         }
 
-        image.clear();
-        image.put(MediaStore.Images.Media.IS_PENDING, 0);
-        resolver.update(imageUri, image, null, null);
+        image.clear()
+        image.put(MediaStore.Images.Media.IS_PENDING, 0)
+        resolver.update(imageUri, image, null, null)
     }
 
     private fun generateRandomInt(): Int {
@@ -299,8 +271,8 @@ class EditFragment : Fragment(), SliderFragment.EditImageListener, View.OnTouchL
         val origH = d.intrinsicHeight
 
         // Calculate the actual dimensions
-        val actW = Math.round(origW * scaleX)
-        val actH = Math.round(origH * scaleY)
+        val actW = (origW * scaleX).roundToInt()
+        val actH = (origH * scaleY).roundToInt()
 
         rect[2] = actW.toFloat()
         rect[3] = actH.toFloat()
@@ -347,6 +319,7 @@ class EditFragment : Fragment(), SliderFragment.EditImageListener, View.OnTouchL
     override fun onTouch(view: View, event: MotionEvent): Boolean {
         if (allowCut) {
             if (event.action == MotionEvent.ACTION_DOWN) {
+                view.performClick()
                 val bounds = getBitmapPositionInsideImageView(chosenImage)
                 val xScaled = (event.x / bounds[4]) - bounds[0]
                 val yScaled = (event.y / bounds[5]) - bounds[1]

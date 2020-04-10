@@ -2,6 +2,7 @@ package com.example.urecaproject.factory
 
 import android.content.Context
 import android.graphics.Bitmap
+import com.example.urecaproject.model.FilterSubfilter
 import com.zomato.photofilters.imageprocessors.SubFilter
 import com.zomato.photofilters.imageprocessors.subfilters.BrightnessSubFilter
 import com.zomato.photofilters.imageprocessors.subfilters.ContrastSubFilter
@@ -11,7 +12,7 @@ import kotlinx.android.synthetic.main.fragment_edit.*
 
 class SubFilterFactory {
 
-    fun getSubFilter(context: Context, subfilter : String, value: Float) : SubFilter {
+    fun getSubFilter(context: Context? = null, subfilter : String, value: Float, bitmap: Bitmap? = null) : SubFilter {
         val valueInt : Int = value.toInt()
         if (subfilter.equals("Brightness", true)) {
             return BrightnessSubFilter(valueInt)
@@ -24,6 +25,9 @@ class SubFilterFactory {
         }
         else if (subfilter.equals("Contrast", true)) {
             return ContrastSubFilter(value)
+        }
+        else if (subfilter.equals("Filter", true)) {
+            return FilterSubfilter(valueInt, bitmap!!)
         }
         //some default
         return BrightnessSubFilter(valueInt)

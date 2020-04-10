@@ -44,6 +44,7 @@ class FilterFragment : Fragment() {
             override fun onImageSelected(imageFilter : FilterModel) {
                 //change the image on EditFragment
                 //filteredBm = imageFilter.processFilter(origBm.copy(Bitmap.Config.ARGB_8888, true))
+
                 editViewModel.setFilter(imageFilter)
                 Navigation.findNavController(view).navigate(R.id.nav_slider)
                 editViewModel.setVisible(View.INVISIBLE)
