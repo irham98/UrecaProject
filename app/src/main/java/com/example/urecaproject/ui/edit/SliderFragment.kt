@@ -17,7 +17,7 @@ import kotlinx.android.synthetic.main.fragment_slider.*
 class SliderFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
 
     private lateinit var editType : String
-    private lateinit var edit : AdjustModel
+    private var edit : AdjustModel? = null
 
     private val editViewModel: EditViewModel by lazy {
         ViewModelProvider(activity!!).get(EditViewModel::class.java)
@@ -46,11 +46,10 @@ class SliderFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
         if (bundle != null) {
             if (bundle.containsKey("editType")) {
                 editType = bundle.getString("editType")!!
-                edit = factory.getAdjustModel(editType)!!
-                seekBar.max = edit.max
-                seekBar.min = edit.min
-                seekBar.progress = edit.start
-                editImageListener.onSliderInit(edit)
+                edit = factory.getAdjustModel(editType)
+                seekBar.max = edit!!.max
+                seekBar.min = edit!!.min
+                seekBar.progress = edit!!.start
             }
             else {
                 editType = "Filter"
@@ -58,6 +57,7 @@ class SliderFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
                 seekBar.min = 0
                 seekBar.progress = 255
             }
+            editImageListener.onSliderInit(edit)
         }
         seekBar.setOnSeekBarChangeListener(this)
 
@@ -75,7 +75,7 @@ class SliderFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
     override fun onProgressChanged(p0: SeekBar?, progress: Int, p2: Boolean) {
         var progressFloat : Float = progress.toFloat()
         if (!editType.equals("Filter"))
-            progressFloat *= edit.multiplier
+            progressFloat *= edit!!.multiplier
         editImageListener.onSliderChanged(progressFloat, editType)
     }
 
