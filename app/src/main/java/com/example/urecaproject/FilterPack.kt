@@ -3,7 +3,6 @@ package com.example.urecaproject
 import android.content.Context
 import com.example.urecaproject.model.FilterModel
 import com.zomato.photofilters.geometry.Point
-import com.zomato.photofilters.imageprocessors.Filter
 import com.zomato.photofilters.imageprocessors.subfilters.BrightnessSubFilter
 import com.zomato.photofilters.imageprocessors.subfilters.ContrastSubFilter
 import com.zomato.photofilters.imageprocessors.subfilters.SaturationSubFilter

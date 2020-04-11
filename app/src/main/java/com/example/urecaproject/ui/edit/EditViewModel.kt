@@ -6,10 +6,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.urecaproject.model.FilterModel
-import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.invoke
 import org.opencv.core.*
 import org.opencv.imgcodecs.Imgcodecs
 import org.opencv.imgproc.Imgproc
@@ -17,13 +13,13 @@ import org.opencv.imgproc.Imgproc
 class EditViewModel : ViewModel() {
 
     private val _bitmap = MutableLiveData<Bitmap>()
-    private val _filter = MutableLiveData<FilterModel>()
+    private val _filter = MutableLiveData<FilterModel?>()
     private val _visible = MutableLiveData<Int>()
     private val _cut = MutableLiveData<Boolean>()
     private val _finish = MutableLiveData<Boolean>()
 
     val bitmap : LiveData<Bitmap> = _bitmap
-    val filter : LiveData<FilterModel> = _filter
+    val filter : LiveData<FilterModel?> = _filter
     val visible : LiveData<Int> = _visible
     val cut : LiveData<Boolean> = _cut
     val finish : LiveData<Boolean> = _finish
@@ -32,13 +28,15 @@ class EditViewModel : ViewModel() {
         _visible.value = View.VISIBLE
         _cut.value = false
         _finish.value = false
+        //_filter.value = FilterModel("NoFilter")
+
     }
 
     fun setBitmap (value: Bitmap) {
         _bitmap.value = value
     }
 
-    fun setFilter(value: FilterModel) {
+    fun setFilter(value: FilterModel?) {
         _filter.value = value
     }
 
@@ -52,10 +50,9 @@ class EditViewModel : ViewModel() {
 
     fun finishCut (value : Boolean) {
         _finish.value = value
-
     }
 
-    suspend fun extractForegroundFromBackground(coordinates: Coordinates, currentPhotoPath: String) : String {
+    fun extractForegroundFromBackground(coordinates: Coordinates, currentPhotoPath: String) : String {
         // TODO: Provide complex object that has both path and extension
 
         // Matrices that OpenCV will be using internally

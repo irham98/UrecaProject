@@ -3,19 +3,13 @@ package com.example.urecaproject.ui.gallery
 import android.content.ContentUris
 import android.content.Context
 import android.database.Cursor
-import android.graphics.Bitmap
 import android.net.Uri
-import android.os.Build
-import android.provider.DocumentsContract
 import android.provider.MediaStore
 import android.util.Log
-import android.util.Size
-import androidx.core.net.toUri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.*
-import java.io.File
 import kotlin.coroutines.CoroutineContext
 
 class GalleryViewModel (private val context: Context): ViewModel(), CoroutineScope {
@@ -61,10 +55,10 @@ class GalleryViewModel (private val context: Context): ViewModel(), CoroutineSco
             val imageUri = ContentUris.withAppendedId(uri,  imageId)
             //val file = File(imageUri)
             imagePath = imageUri.toString()
-            Log.i("imagepath", imagePath)
-            val input = context.contentResolver.getType(imageUri)
+            //Log.i("imagepath", imagePath)
+            //val input = context.contentResolver.getType(imageUri)
             //val inputAsString = input!!.bufferedReader().use { it.readText() }
-            Log.i("imagepath",input)
+            //Log.i("imagepath",input)
             imageList.add(imagePath)
         }
         cursor.close()

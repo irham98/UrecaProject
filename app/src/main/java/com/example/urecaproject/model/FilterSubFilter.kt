@@ -5,7 +5,7 @@ import android.graphics.Canvas
 import android.graphics.Paint
 import com.zomato.photofilters.imageprocessors.SubFilter
 
-class FilterSubfilter (
+class FilterSubFilter (
     var value : Int,
     var filter : Bitmap
     ): SubFilter {

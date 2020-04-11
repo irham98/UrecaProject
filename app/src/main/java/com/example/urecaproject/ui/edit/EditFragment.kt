@@ -25,6 +25,7 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.example.urecaproject.R
 import com.example.urecaproject.factory.SubFilterFactory
+import com.example.urecaproject.model.AdjustModel
 import com.zomato.photofilters.imageprocessors.Filter
 import com.zomato.photofilters.imageprocessors.SubFilter
 import kotlinx.android.synthetic.main.fragment_edit.*
@@ -45,9 +46,9 @@ class EditFragment : Fragment(), SliderFragment.EditImageListener, View.OnTouchL
     private lateinit var imagePath : String
     private lateinit var internalPath : String
     private lateinit var origBm : Bitmap
-    private lateinit var filteredBm : Bitmap
+    private var filteredBm : Bitmap? = null
 
-    private lateinit var finalStr : String
+    private var finalStr : String? = null
     private var finalFloat : Float = 0f
 
     private var allowCut : Boolean = false
@@ -98,9 +99,11 @@ class EditFragment : Fragment(), SliderFragment.EditImageListener, View.OnTouchL
 
     private fun observeChanges() {
         editViewModel.filter.observe(viewLifecycleOwner, Observer { filter ->
-            filteredBm = filter.processFilter(origBm.copy(Bitmap.Config.ARGB_8888, true))
-            chosenImage.setImageBitmap(filteredBm)
-            //TODO SOME ISSUES WITH ORIGBM
+            if (filter != null) {
+                filteredBm = filter.processFilter(origBm.copy(Bitmap.Config.ARGB_8888, true))
+                chosenImage.setImageBitmap(filteredBm)
+                //TODO SOME ISSUES WITH ORIGBM
+            }
         })
 
         editViewModel.visible.observe(viewLifecycleOwner, Observer { value ->
@@ -124,10 +127,10 @@ class EditFragment : Fragment(), SliderFragment.EditImageListener, View.OnTouchL
 
             loadingGrabcut.visibility = View.VISIBLE
 
-            val path = CoroutineScope(Dispatchers.Default).async {
+            val path = withContext(Dispatchers.Default) {
                 editViewModel.extractForegroundFromBackground(coordinates, internalPath) }
 
-            loadWithGlide(path.await())
+            loadWithGlide(path)
 
             loadingGrabcut.visibility = View.GONE
         }
@@ -186,19 +189,30 @@ class EditFragment : Fragment(), SliderFragment.EditImageListener, View.OnTouchL
         }
     }
 
+    //called when slider is moved
     override fun onSliderChanged(value: Float, string: String) {
         editImage(value, string)
     }
 
+    //called when slider is first initialized
+    override fun onSliderInit(model: AdjustModel?) {
+        if (model != null) {
+            finalFloat = model.start.toFloat() * model.multiplier
+            finalStr = model.text
+        }
+        else {
+            finalStr = "Filter"
+            finalFloat = 255f
+        }
+    }
+
     private fun editImage(value: Float, string: String) : Bitmap {
         val myFilter = Filter()
-        val factory = SubFilterFactory()
-        val subfilter : SubFilter = factory.getSubFilter(context, string, value, filteredBm)
-        val bitmap : Bitmap
+        val subfilter : SubFilter = SubFilterFactory().getSubFilter(context, string, value, filteredBm)
         finalFloat = value
         finalStr = string
         myFilter.addSubFilter(subfilter)
-        bitmap = myFilter.processFilter(origBm.copy(Bitmap.Config.ARGB_8888, true))
+        val bitmap = myFilter.processFilter(origBm.copy(Bitmap.Config.ARGB_8888, true))
         chosenImage.setImageBitmap(bitmap)
 
         return bitmap
@@ -206,7 +220,8 @@ class EditFragment : Fragment(), SliderFragment.EditImageListener, View.OnTouchL
 
     private fun endEdit (apply : Boolean) {
         if (apply) {
-            origBm = editImage(finalFloat, finalStr)
+            if (finalStr != null)
+                origBm = editImage(finalFloat, finalStr!!)
         }
         editViewModel.setVisible(View.VISIBLE)
         chosenImage.setImageBitmap(origBm)
@@ -314,6 +329,7 @@ class EditFragment : Fragment(), SliderFragment.EditImageListener, View.OnTouchL
         super.onDestroyView()
         editViewModel.setVisible(View.VISIBLE)
         editViewModel.allowCut(false)
+        editViewModel.setFilter(null)
     }
 
     override fun onTouch(view: View, event: MotionEvent): Boolean {

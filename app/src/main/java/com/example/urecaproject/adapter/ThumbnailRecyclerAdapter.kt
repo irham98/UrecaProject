@@ -18,14 +18,13 @@ import kotlinx.coroutines.*
 
 
 class ThumbnailRecyclerAdapter (
-    private val context: Context,
+    context: Context,
     @LayoutRes private val layoutId: Int,
     private var imageBitmap : Bitmap,
     private val listener: ImageListener)
     : RecyclerView.Adapter<ThumbnailRecyclerAdapter.ViewHolder>()   {
 
     private var imageFilters: ArrayList<FilterModel> = FilterPack.getFilterPack(context)
-    //private lateinit var imageBitmap : Bitmap
 
     inner class ViewHolder(v: View) : RecyclerView.ViewHolder(v), View.OnClickListener {
         private val view: View = v
@@ -43,13 +42,12 @@ class ThumbnailRecyclerAdapter (
             this.item = item
             val thumbnail  = processBitmap()
             Glide.with(view).load(thumbnail).thumbnail(0.1f).apply(RequestOptions().centerCrop()).into(view.thumbImage)
+            view.thumbTitle.text = item.name
             //view.thumbImage.setImageBitmap(thumbnail)
             //view.thumbImage.setImageBitmap(item)
         }
 
         fun processBitmap() : Bitmap {
-            //val size : Int = context.resources.getDimension(R.dimen.thumbnail_size).toInt()
-            //val small = Bitmap.createScaledBitmap(imageBitmap, size, size, false)
             val processedThumbnail = item.processFilter(imageBitmap.copy(Bitmap.Config.ARGB_8888, true))
             return processedThumbnail
 

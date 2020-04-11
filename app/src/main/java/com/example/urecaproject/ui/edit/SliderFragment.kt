@@ -50,6 +50,7 @@ class SliderFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
                 seekBar.max = edit.max
                 seekBar.min = edit.min
                 seekBar.progress = edit.start
+                editImageListener.onSliderInit(edit)
             }
             else {
                 editType = "Filter"
@@ -59,6 +60,7 @@ class SliderFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
             }
         }
         seekBar.setOnSeekBarChangeListener(this)
+
 
         editViewModel.visible.observe(viewLifecycleOwner, Observer { visible ->
             if (visible == View.VISIBLE) {
@@ -75,14 +77,6 @@ class SliderFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
         if (!editType.equals("Filter"))
             progressFloat *= edit.multiplier
         editImageListener.onSliderChanged(progressFloat, editType)
-
-
-/*        if (editType.equals("Saturation"))
-            saturationControls(p1)
-        else if (editType.equals("Contrast"))
-            contrastControls(p1)
-        else if (editType.equals("Brightness"))
-            brightnessControls(p1)*/
     }
 
     override fun onStartTrackingTouch(p0: SeekBar?) {
@@ -93,26 +87,8 @@ class SliderFragment : Fragment(), SeekBar.OnSeekBarChangeListener {
 
     }
 
-/*
-    fun brightnessControls(progress : Int) {
-        val progressFloat : Float = progress.toFloat()
-        editImageListener.onSliderChanged(progressFloat, editType)
-    }
-
-    fun contrastControls(progress: Int) {
-        var progressFloat : Float = progress.toFloat()
-        progressFloat *= 0.01f
-        editImageListener.onSliderChanged(progressFloat, editType)
-    }
-
-    fun saturationControls(progress : Int) {
-        var progressFloat : Float = progress.toFloat()
-        progressFloat *= 0.01f
-        editImageListener.onSliderChanged(progressFloat, editType)
-    }
-*/
-
     interface EditImageListener {
         fun onSliderChanged(value: Float, string: String)
+        fun onSliderInit(model : AdjustModel?)
     }
 }
