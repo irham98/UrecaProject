@@ -23,6 +23,7 @@
     <string name="metropolis">Metropolis</string>
     <string name="cancel">CANCEL</string>
     <string name="apply">APPLY</string>
+    <string name="menu_draw">Draw</string>
 
 
 </resources>

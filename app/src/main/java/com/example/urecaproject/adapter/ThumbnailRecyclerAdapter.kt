@@ -8,6 +8,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
+import coil.Coil
+import coil.api.get
+import coil.api.load
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.urecaproject.FilterPack
@@ -19,30 +22,40 @@ import kotlinx.coroutines.*
 
 class ThumbnailRecyclerAdapter (
     context: Context,
-    @LayoutRes private val layoutId: Int,
+    @LayoutRes layoutId: Int,
     private var imageBitmap : Bitmap,
-    private val listener: ImageListener)
-    : RecyclerView.Adapter<ThumbnailRecyclerAdapter.ViewHolder>()   {
+    listener: ItemListener<FilterModel>)
+    : BaseAdapter<FilterModel, ThumbnailRecyclerAdapter.ViewHolder>(context, layoutId, listener)   {
 
-    private var imageFilters: ArrayList<FilterModel> = FilterPack.getFilterPack(context)
+    //private var imageFilters: ArrayList<FilterModel> =
 
-    inner class ViewHolder(v: View) : RecyclerView.ViewHolder(v), View.OnClickListener {
+    init {
+        items = FilterPack.getFilterPack(context)
+    }
+
+    inner class ViewHolder(v: View) : BaseViewHolder<FilterModel>(v) {
         private val view: View = v
-        private lateinit var item: FilterModel
+        override lateinit var item: FilterModel
 
         override fun onClick(view: View?) {
-            listener.onImageSelected(imageFilters[adapterPosition])
+            listener.onItemClicked(items[adapterPosition])
         }
-
+/*
         init {
             v.setOnClickListener(this)
-        }
+        }*/
 
-        fun bindItem(item: FilterModel) {
-            this.item = item
-            val thumbnail  = processBitmap()
-            Glide.with(view).load(thumbnail).thumbnail(0.1f).apply(RequestOptions().centerCrop()).into(view.thumbImage)
+        override suspend fun bindItem(item: FilterModel) {
+            //view.thumbTitle.visibility = View.INVISIBLE
+            super.bindItem(item)
+            val thumbnail  = Coil.get(processBitmap())
+            view.thumbImage.load(thumbnail) {
+                crossfade(true)
+                crossfade(200)
+            }
+            //Glide.with(view).load(thumbnail).thumbnail(0.1f).apply(RequestOptions().centerCrop()).into(view.thumbImage)
             view.thumbTitle.text = item.name
+            //view.thumbTitle.visibility = View.VISIBLE
             //view.thumbImage.setImageBitmap(thumbnail)
             //view.thumbImage.setImageBitmap(item)
         }
@@ -63,18 +76,18 @@ class ThumbnailRecyclerAdapter (
         return ViewHolder(LayoutInflater.from(parent.context).inflate(layoutId, parent, false))
     }
 
-    override fun getItemCount(): Int {
+/*    override fun getItemCount(): Int {
         return imageFilters.size
-    }
+    }*/
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+/*    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item : FilterModel = imageFilters[position]
-        holder.bindItem(item)
-    }
+        CoroutineScope(Dispatchers.Main).launch{holder.bindItem(item)}
+    }*/
 
-    interface ImageListener {
+/*    interface ImageListener {
         fun onImageSelected (imageFilter: FilterModel)
-    }
+    }*/
 
 /*    fun setImages(galleryImages: ArrayList<Bitmap>) {
         this.galleryImages = galleryImages

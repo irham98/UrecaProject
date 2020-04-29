@@ -1,5 +1,6 @@
 package com.example.urecaproject.adapter
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,29 +11,29 @@ import com.example.urecaproject.model.AdjustModel
 import kotlinx.android.synthetic.main.adjust_item.view.*
 
 class AdjustRecyclerAdapter(
-    @LayoutRes private val layoutId: Int,
-    private val adjustItem: ArrayList<AdjustModel>,
-    private val listener: ButtonListener)
-    : RecyclerView.Adapter<AdjustRecyclerAdapter.ViewHolder>()  {
+    context: Context,
+    items: ArrayList<AdjustModel>,
+    @LayoutRes layoutId: Int,
+    listener: ItemListener<AdjustModel>)
+    : BaseAdapter<AdjustModel, AdjustRecyclerAdapter.ViewHolder>(context, items, layoutId, listener)  {
 
-    inner class ViewHolder(v: View) : RecyclerView.ViewHolder(v), View.OnClickListener {
+    inner class ViewHolder(v: View) : BaseViewHolder<AdjustModel>(v) {
         private val view: View = v
-        private lateinit var item: AdjustModel
+        override lateinit var item: AdjustModel
 
-        init {
+/*        init {
             v.setOnClickListener(this)
-        }
+        }*/
 
         override fun onClick(p0: View?) {
-            listener.onButtonSelected(adjustItem.get(adapterPosition).text)
+            listener.onItemClicked(items[adapterPosition])
         }
 
-        fun bindItem(item: AdjustModel) {
-            this.item = item
+        override suspend fun bindItem(item: AdjustModel) {
+            super.bindItem(item)
             view.buttonName.text = item.text
             view.buttonImage.setImageResource(item.drawable)
         }
-
 
     }
 
@@ -44,17 +45,17 @@ class AdjustRecyclerAdapter(
 
     }
 
-    override fun getItemCount(): Int {
+/*    override fun getItemCount(): Int {
         return adjustItem.size
 
-    }
+    }*/
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+/*    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item : AdjustModel = adjustItem[position]
         holder.bindItem(item)
-    }
+    }*/
 
-    interface ButtonListener {
+/*    interface ButtonListener {
         fun onButtonSelected(string : String)
-    }
+    }*/
 }

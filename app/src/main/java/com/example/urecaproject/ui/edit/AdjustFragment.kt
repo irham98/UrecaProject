@@ -11,6 +11,7 @@ import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.urecaproject.R
 import com.example.urecaproject.adapter.AdjustRecyclerAdapter
+import com.example.urecaproject.adapter.BaseAdapter
 import com.example.urecaproject.model.AdjustModel
 import kotlinx.android.synthetic.main.fragment_adjust.*
 
@@ -45,8 +46,9 @@ class AdjustFragment : Fragment() {
         linearLayoutManager.orientation = LinearLayoutManager.HORIZONTAL
         adjustRv.layoutManager = linearLayoutManager
 
-        adjustRv.adapter = AdjustRecyclerAdapter(R.layout.adjust_item, adjustItems, object : AdjustRecyclerAdapter.ButtonListener {
-            override fun onButtonSelected(string: String) {
+        adjustRv.adapter = AdjustRecyclerAdapter(context!!, adjustItems, R.layout.adjust_item,  object : BaseAdapter.ItemListener<AdjustModel> {
+            override fun onItemClicked(item: AdjustModel) {
+                val string : String = item.text
                 val bundle = Bundle()
                 bundle.putString("editType", string)
                 Navigation.findNavController(view).navigate(R.id.nav_slider, bundle)

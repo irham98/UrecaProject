@@ -5,6 +5,7 @@ import android.content.ContentValues
 import android.graphics.*
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
+import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
@@ -20,6 +21,10 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
+import coil.Coil
+import coil.api.get
+import coil.api.load
+import coil.target.Target
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
@@ -102,7 +107,6 @@ class EditFragment : Fragment(), SliderFragment.EditImageListener, View.OnTouchL
             if (filter != null) {
                 filteredBm = filter.processFilter(origBm.copy(Bitmap.Config.ARGB_8888, true))
                 chosenImage.setImageBitmap(filteredBm)
-                //TODO SOME ISSUES WITH ORIGBM
             }
         })
 
@@ -137,6 +141,23 @@ class EditFragment : Fragment(), SliderFragment.EditImageListener, View.OnTouchL
     }
 
     private fun loadWithGlide(path: String)  {
+
+        Coil.load(context!!, path) {
+            placeholder(R.drawable.ic_broken_image)
+            target(onStart = { placeholder ->
+                chosenImage.setImageDrawable(placeholder)
+            },
+                onSuccess = {
+                    chosenImage.setImageDrawable(it)
+                    val drawable = it as BitmapDrawable
+                    origBm = drawable.bitmap
+                    editViewModel.setBitmap(origBm)
+                    //chosenImage.setImageBitmap(origBm)
+
+                })
+        }
+
+/*
         Glide.with(this)
             .asBitmap()
             .load(path)
@@ -150,7 +171,7 @@ class EditFragment : Fragment(), SliderFragment.EditImageListener, View.OnTouchL
                 }
                 override fun onLoadCleared(placeholder: Drawable?) {
                 }
-            })
+            })*/
     }
 
     private fun showImage() {

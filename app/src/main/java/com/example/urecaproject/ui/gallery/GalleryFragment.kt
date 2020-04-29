@@ -9,10 +9,11 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
-import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.urecaproject.R
+import com.example.urecaproject.adapter.BaseAdapter
 import com.example.urecaproject.adapter.GalleryRecyclerAdapter
-import com.example.urecaproject.adapter.GalleryRecyclerAdapter.ImageListener
 import com.example.urecaproject.factory.GalleryViewModelFactory
 import kotlinx.android.synthetic.main.fragment_gallery.*
 
@@ -24,11 +25,12 @@ class GalleryFragment : Fragment() {
         ViewModelProvider(activity!!, factory).get(GalleryViewModel::class.java)
     }
     private var images : ArrayList<String> = ArrayList()
+    private var videos : ArrayList<String> = ArrayList()
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
         // load images
-        galleryViewModel.getAllImages()
+        galleryViewModel.getAllDocs()
     }
 
     override fun onCreateView(
@@ -42,24 +44,61 @@ class GalleryFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val listener = object : ImageListener {
+/*        val listener = object : ImageListener {
             override fun onImageSelected(imagePath: String) {
                 val bundle = Bundle()
                 bundle.putString("path", imagePath)
                 Navigation.findNavController(view).navigate(R.id.nav_edit, bundle)
             }
-        }
-        val adapter = GalleryRecyclerAdapter(context!!, R.layout.gallery_item, images, listener)
-        galleryRv.adapter = adapter
-        galleryRv.layoutManager = GridLayoutManager(context, 3)
-        galleryRv.setHasFixedSize(true)
+        }*/
 
+        val imgAdapter = initRecyclerView(picturesRv, images)
+        val vidAdapter = initRecyclerView(videosRv, videos)
+        /*val imgAdapter = GalleryRecyclerAdapter(context!!, R.layout.gallery_item, images, listener)
+        val vidAdapter = GalleryRecyclerAdapter(context!!, R.layout.gallery_item, videos, listener)
+        val linearLayoutManager = LinearLayoutManager(context)
+        val linearLayoutManager2 = LinearLayoutManager(context)
+        linearLayoutManager.orientation = LinearLayoutManager.HORIZONTAL
+        linearLayoutManager2.orientation = LinearLayoutManager.HORIZONTAL
+
+        picturesRv.adapter = imgAdapter
+        picturesRv.layoutManager = linearLayoutManager
+        picturesRv.setHasFixedSize(true)
+
+        videosRv.adapter = vidAdapter
+        videosRv.layoutManager = linearLayoutManager2
+        videosRv.setHasFixedSize(true)
+*/
         galleryViewModel.getImageList().observe(viewLifecycleOwner, Observer { listOfImage ->
             images = ArrayList(listOfImage)
-            adapter.setImages(images)
+            imgAdapter.setImages(images)
 
         })
 
+        galleryViewModel.getVideosList().observe(viewLifecycleOwner, Observer { listOfVids ->
+            videos = ArrayList(listOfVids)
+            vidAdapter.setImages(videos)
+
+        })
+
+    }
+
+    fun initRecyclerView(rv : RecyclerView, list : ArrayList<String>) : GalleryRecyclerAdapter {
+        val mAdapter : GalleryRecyclerAdapter
+        rv.apply {
+            layoutManager = LinearLayoutManager(context).apply { orientation = LinearLayoutManager.HORIZONTAL }
+            mAdapter = GalleryRecyclerAdapter(context!!, list, R.layout.gallery_item, object : BaseAdapter.ItemListener<String>{
+                override fun onItemClicked(item: String) {
+                    val bundle = Bundle()
+                    bundle.putString("path", item)
+                    Navigation.findNavController(view!!).navigate(R.id.nav_edit, bundle)
+                }
+
+            })
+            adapter = mAdapter
+            setHasFixedSize(true)
+        }
+        return mAdapter
     }
 
 

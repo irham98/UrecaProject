@@ -4,6 +4,7 @@ import android.content.ContentUris
 import android.content.Context
 import android.database.Cursor
 import android.net.Uri
+import android.provider.DocumentsContract
 import android.provider.MediaStore
 import android.util.Log
 import androidx.lifecycle.LiveData
@@ -24,6 +25,14 @@ class GalleryViewModel (private val context: Context): ViewModel(), CoroutineSco
         return imagesLiveData
     }
 
+    private var videosLiveData: MutableLiveData<List<String>> = MutableLiveData()
+
+    fun getVideosList(): LiveData<List<String>> {
+        return videosLiveData
+    }
+
+
+
     /**
      * Getting All Images Path.
      *
@@ -31,45 +40,49 @@ class GalleryViewModel (private val context: Context): ViewModel(), CoroutineSco
      *
      * @return ArrayList with images Path
      */
-    private fun loadImagesfromSDCard(): ArrayList<String> {
-        val uri: Uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+    private fun loadFromSDCard(extUri: Uri, colStr: String ): ArrayList<String> {
+        val uri: Uri = extUri
         val cursor: Cursor?
         val columnIndexId: Int
-        val imageList = ArrayList<String>()
-        var imageId: Long
-        var imagePath: String?
+        val list = ArrayList<String>()
+        var id: Long
+        var path: String?
 
-        val projection = arrayOf(MediaStore.Images.Media._ID,MediaStore.Images.Media.RELATIVE_PATH )
+        val projection = arrayOf(colStr)
 
         cursor = context.contentResolver.query(uri, projection, null, null, null)
-        columnIndexId = cursor!!.getColumnIndexOrThrow(MediaStore.Images.Media._ID)
-        val columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.RELATIVE_PATH)
+        columnIndexId = cursor!!.getColumnIndexOrThrow(colStr)
 
 
         while (cursor.moveToNext()) {
 
-            imageId = cursor.getLong(columnIndexId)
+            id = cursor.getLong(columnIndexId)
 
-            val some = cursor.getString(columnIndex)
-            Log.i("imagerelative", ""+some)
-            val imageUri = ContentUris.withAppendedId(uri,  imageId)
+            val itemUri = ContentUris.withAppendedId(uri,  id)
             //val file = File(imageUri)
-            imagePath = imageUri.toString()
-            //Log.i("imagepath", imagePath)
-            //val input = context.contentResolver.getType(imageUri)
-            //val inputAsString = input!!.bufferedReader().use { it.readText() }
-            //Log.i("imagepath",input)
-            imageList.add(imagePath)
+            path = itemUri.toString()
+            Log.i("imagepath", path)
+            list.add(path)
         }
         cursor.close()
-        return imageList
+        return list
     }
 
-    fun getAllImages() {
+
+
+    fun getAllDocs() {
         launch(Dispatchers.Main) {
-            imagesLiveData.value = withContext(Dispatchers.IO) {
-                loadImagesfromSDCard()
+            val img = async {
+                loadFromSDCard(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, MediaStore.Images.Media._ID)
             }
+            val vid = async {
+                loadFromSDCard(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, MediaStore.Video.Media._ID)
+            }
+/*            val doc = async {
+                loadFromSDCard(MediaStore.Files.getContentUri("external"), MediaStore.Downloads._ID)
+            }*/
+            imagesLiveData.value = img.await()
+            videosLiveData.value = vid.await()
         }
     }
 }

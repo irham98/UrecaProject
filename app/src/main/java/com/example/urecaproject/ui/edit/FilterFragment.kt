@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.urecaproject.R
+import com.example.urecaproject.adapter.BaseAdapter
 import com.example.urecaproject.adapter.ThumbnailRecyclerAdapter
 import com.example.urecaproject.model.FilterModel
 import kotlinx.android.synthetic.main.fragment_filter.*
@@ -40,12 +41,12 @@ class FilterFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val listener = object : ThumbnailRecyclerAdapter.ImageListener {
-            override fun onImageSelected(imageFilter : FilterModel) {
+        val listener = object : BaseAdapter.ItemListener<FilterModel> {
+            override fun onItemClicked(item : FilterModel) {
                 //change the image on EditFragment
                 //filteredBm = imageFilter.processFilter(origBm.copy(Bitmap.Config.ARGB_8888, true))
 
-                editViewModel.setFilter(imageFilter)
+                editViewModel.setFilter(item)
                 Navigation.findNavController(view).navigate(R.id.nav_slider)
                 editViewModel.setVisible(View.INVISIBLE)
             }

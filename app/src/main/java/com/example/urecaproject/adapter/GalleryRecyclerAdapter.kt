@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
+import coil.api.load
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.urecaproject.R
@@ -16,37 +17,41 @@ import java.io.File
 
 
 class GalleryRecyclerAdapter (
-    private val context: Context,
-    @LayoutRes private val layoutId: Int,
-    private var galleryImages: ArrayList<String>,
-    private val listener: ImageListener)
-    : RecyclerView.Adapter<GalleryRecyclerAdapter.ViewHolder>()   {
+    context: Context,
+    items: ArrayList<String>,
+    @LayoutRes layoutId: Int,
+    listener: ItemListener<String>)
+    : BaseAdapter<String, GalleryRecyclerAdapter.ViewHolder>(context, items, layoutId, listener)   {
 
-    inner class ViewHolder(v: View) : RecyclerView.ViewHolder(v), View.OnClickListener {
+    inner class ViewHolder(v: View) : BaseViewHolder<String>(v) {
         private val view: View = v
-        private lateinit var item: String
+        override lateinit var item: String
 
         override fun onClick(view: View?) {
-            listener.onImageSelected(galleryImages.get(adapterPosition))
+            listener.onItemClicked(items[adapterPosition])
         }
 
-        init {
+/*        init {
             v.setOnClickListener(this)
-        }
+        }*/
 
-        fun bindItem(item: String) {
-            this.item = item
+        override suspend fun bindItem(item: String) {
+            super.bindItem(item)
             getImage(item)
         }
 
         private fun getImage(item: String) {
 
-            //TODO read up on Glide
-            Glide.with(context)
+            view.galleryImage.load(item) {
+                placeholder(R.drawable.ic_broken_image)
+                crossfade(true)
+                crossfade(500)
+            }
+/*            Glide.with(context)
                 .load(Uri.decode(item))
                 .thumbnail(0.01f)
                 .apply(RequestOptions().placeholder(R.drawable.ic_broken_image).centerCrop())
-                .into(view.galleryImage)
+                .into(view.galleryImage)*/
         }
     }
 
@@ -58,23 +63,16 @@ class GalleryRecyclerAdapter (
         return ViewHolder(LayoutInflater.from(parent.context).inflate(layoutId, parent, false))
     }
 
-    override fun getItemCount(): Int {
-        return galleryImages.size
-    }
-
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val item : String = galleryImages[position]
+/*    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        val item : String = items[position]
         holder.bindItem(item)
-    }
+    }*/
 
     fun setImages(galleryImages: ArrayList<String>) {
-        this.galleryImages = galleryImages
+        this.items = galleryImages
         notifyDataSetChanged()
     }
 
-    interface ImageListener {
-        fun onImageSelected (imagePath: String)
-    }
 
 
 }
