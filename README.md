@@ -2,7 +2,7 @@
 
 ### DEMO OF FEATURES
 1. Gallery images and videos will appear on the app (working on adding other types of documents)
-![Gallery feature] /screenshots/
+![Gallery feature] /screenshots/gallery_feature.gif
 2. Selecting an image will allow editing of that image:
     - selecting filters and adjusting them
     ![Filter feature] /screenshots/
